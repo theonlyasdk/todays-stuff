@@ -257,7 +257,7 @@ dialog>.cap,dialog form>.cap{text-align:center}
   </section>
 
   <section id="noteView" hidden>
-    <input class="ttl" id="ntitle" placeholder="Untitled note" aria-label="Note title">
+    <input class="ttl" id="ntitle" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Untitled note" aria-label="Note title">
     <div class="tools"><div class="tscroll" id="tools" role="toolbar" aria-label="Formatting">
       <button class="tb" data-fmt="bold" aria-label="Bold" title="Bold"></button>
       <button class="tb" data-fmt="italic" aria-label="Italic" title="Italic"></button>
@@ -269,7 +269,7 @@ dialog>.cap,dialog form>.cap{text-align:center}
       <button class="tb" data-fmt="code" aria-label="Code" title="Code"></button>
       <button class="tb" data-fmt="link" aria-label="Link" title="Link"></button>
     </div></div>
-    <textarea class="body" id="nbody" placeholder="Start writing. Select text, then use the buttons above." aria-label="Note body"></textarea>
+    <textarea class="body" id="nbody" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Start writing. Select text, then use the buttons above." aria-label="Note body"></textarea>
     
     
   </section>
@@ -296,7 +296,7 @@ dialog>.cap,dialog form>.cap{text-align:center}
     <h2 id="tt">New tab</h2>
     <p class="cap" id="tsub">Group related todos and notes.</p>
     <label class="lbl" for="tname">Tab name</label>
-    <input class="field" id="tname" maxlength="24" autocomplete="off" placeholder="Groceries" autofocus>
+    <input class="field" id="tname" maxlength="24" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Groceries" autofocus>
     <p class="err" id="terr" role="alert" hidden></p>
     <div class="stack"><button type="submit" class="btn primary" id="tok">Add tab</button><button type="button" class="btn" id="tcancel">Cancel</button></div>
   </form>
@@ -382,7 +382,7 @@ function render(){
   if(!list.length){const E=EMPTY[S.filter]||['folder','This tab is empty','Items you add here stay in '+custom.name+'.'];$('#empty').innerHTML=ic(E[0],40,1.5)+`<p class="et">${esc(E[1])}</p><p class="cap">${esc(E[2])}</p>`}
   const mb=`<button class="icon" data-act="menu" aria-label="More actions" aria-haspopup="menu">${ic('more')}</button>`;
   const rowHtml=i=>i.type==='todo'
-    ?`<li class="row${i.done?' done':''}" data-id="${i.id}"><input type="checkbox" data-act="toggle" aria-label="Mark done"${i.done?' checked':''}><input class="txt" data-act="text" value="${esc(i.text)}" placeholder="What needs doing?" aria-label="Todo">${mb}</li>`
+    ?`<li class="row${i.done?' done':''}" data-id="${i.id}"><input type="checkbox" data-act="toggle" aria-label="Mark done"${i.done?' checked':''}><input class="txt" data-act="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" value="${esc(i.text)}" placeholder="What needs doing?" aria-label="Todo">${mb}</li>`
     :`<li class="row" data-id="${i.id}"><span class="ico">${ic('file',20)}</span><button class="note" data-act="open"><span class="t">${esc(i.title||'Untitled note')}</span><span class="cap pv">${esc(((i.body||'').split('\n').map(s=>s.replace(/^[#>*\-\s\[\]x0-9.]+/,'').trim()).find(Boolean))||'No content yet')}</span></button><span class="cap">${fmt(i.updated||i.created)}</span>${mb}</li>`;
   const grp=(k,name)=>{const g=list.filter(i=>i.type===k);return g.length?(S.filter==='todo'||S.filter==='note'?'':`<h3 class="gh">${name}</h3>`)+`<ul class="grp">${g.map(rowHtml).join('')}</ul>`:''};
   $('#items').innerHTML=grp('todo','Todos')+grp('note','Notes');
