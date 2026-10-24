@@ -391,21 +391,13 @@ function exportData(){
     let name='notes/'+base+'.md';
     if(used.has(name)){name='notes/'+base+'-'+n.id+'.md'}
     used.add(name);
-    const content='# '+(n.title||'Untitled')+'
-
-'+(n.body||'')+'
-';
+    const content='# '+(n.title||'Untitled')+'\n\n'+(n.body||'')+'\n';
     files.push({name,data:content});
   }
   const todos=S.items.filter(i=>i.type==='todo'&&i.text.trim());
-  const todoMd='# Todos
-
-'+(todos.length?todos.map(t=>`- [${t.done?'x':' '}] ${t.text}`).join('
-'):'_No todos._')+'
-';
+  const todoMd='# Todos\n\n'+(todos.length?todos.map(t=>`- [${t.done?'x':' '}] ${t.text}`).join('\n'):'_No todos._')+'\n';
   files.push({name:'todos.md',data:todoMd});
-  if(!files.length)files.push({name:'README.md',data:'# Today's Stuff export
-'});
+  if(!files.length)files.push({name:'README.md',data:"# Today's Stuff export"});
   const blob=createZip(files);
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='todays-stuff-export.zip';
