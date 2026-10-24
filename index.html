@@ -798,6 +798,7 @@
         background: color-mix(in srgb, var(--text) 22%, transparent);
         flex: none;
         touch-action: none;
+        pointer-events: auto;
       }
       #esheet::before {
         content: "";
@@ -828,6 +829,9 @@
       #esheet button svg {
         flex: none;
         color: var(--muted);
+      }
+      #esheet button {
+        touch-action: none;
       }
       #esheet button:hover {
         background: var(--hover);
