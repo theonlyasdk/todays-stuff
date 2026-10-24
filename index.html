@@ -790,16 +790,6 @@
       #esheet[hidden] {
         display: none;
       }
-      .sheet-handle {
-        width: 36px;
-        height: 5px;
-        margin: 0 auto 4px;
-        border-radius: 3px;
-        background: color-mix(in srgb, var(--text) 22%, transparent);
-        flex: none;
-        touch-action: none;
-        pointer-events: auto;
-      }
       #esheet::before {
         content: "";
         display: block;
@@ -1780,7 +1770,6 @@
         if (!n) return;
         const s = $("#esheet");
         s.innerHTML =
-          '<div class="sheet-handle"></div>' +
           '<button data-fmt="md">' +
           ic("file", 20) +
           "Export as Markdown</button>" +
