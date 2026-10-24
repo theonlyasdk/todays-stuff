@@ -130,6 +130,11 @@ dialog .cap{margin:4px 0 16px}
 #menu button.danger svg{color:var(--danger)}
 #menu button:hover{background:var(--hover)}
 #menu button.danger{color:var(--danger)}
+#esheet{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;flex-direction:column;gap:8px;padding:12px 12px calc(12px + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.14);transform:translateY(100%);transition:transform .25s cubic-bezier(.32,.72,0,1)}
+#esheet.open{transform:translateY(0)}
+#esheet button{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 16px;text-align:left;font:inherit;font-size:16px;color:var(--text);background:none;border:0;border-radius:var(--r-sm);cursor:pointer}
+#esheet button:hover{background:var(--hover)}
+#esheet button svg{flex:none;color:var(--muted)}
 @media(max-width:520px){
   .wrap{padding-top:8px}h1{font-size:32px}
   dialog{margin:auto 0 0;width:100%;max-width:100%;border-radius:var(--r) var(--r) 0 0;border-bottom:0;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
@@ -278,6 +283,7 @@ dialog>.cap,dialog form>.cap{text-align:center}
 <button class="btn primary fab" id="new"></button>
 <div id="scrim" hidden></div>
 <div id="menu" role="menu" hidden></div>
+<div id="esheet" hidden aria-label="Export options"></div>
 <div id="pscrim" hidden></div>
 <div id="pmenu" role="menu" hidden></div>
 
@@ -402,6 +408,32 @@ function exportData(){
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download='todays-stuff-export.zip';
   document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function showExportSheet(){
+  const n=cur();if(!n)return;
+  const s=$('#esheet');s.innerHTML=
+    '<button data-fmt="md">'+ic('file',20)+'Export as Markdown</button>'+
+    '<button data-fmt="html">'+ic('code',20)+'Export as HTML</button>'+
+    '<button data-fmt="pdf">'+ic('file',20)+'Export as PDF</button>'+
+    '<button data-fmt="cancel">Cancel</button>';
+  s.hidden=false;requestAnimationFrame(()=>s.classList.add('open'));
+  $('#scrim').hidden=false;
+}
+function closeExportSheet(){const s=$('#esheet');if(s.hidden||!s.classList.contains('open'))return;s.classList.remove('open');$('#scrim').hidden=true;setTimeout(()=>s.hidden=true,260)}
+function exportNoteMarkdown(n){
+  const blob=new Blob(['# '+(n.title||'Untitled')+'\n\n'+(n.body||'')+'\n'],{type:'text/markdown'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(n.title||'note')+'.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);closeExportSheet();
+}
+function exportNoteHTML(n){
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+ (n.title||'Untitled').replace(/</g,'&lt;') +'</title><style>body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;line-height:1.6}pre{white-space:pre-wrap}</style></head><body><h1>'+(n.title||'Untitled').replace(/</g,'&lt;')+'</h1><div>'+ (typeof md==='function'?md(n.body||''):(n.body||'').replace(/</g,'&lt;')) +'</div></body></html>';
+  const blob=new Blob([html],{type:'text/html'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(n.title||'note')+'.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);closeExportSheet();
+}
+function exportNotePDF(n){
+  const w=window.open('','_blank');
+  if(!w){closeExportSheet();return}
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8"><title>'+ (n.title||'Untitled') +'</title><style>body{font-family:system-ui,sans-serif;max-width:720px;margin:40px auto;padding:0 16px;line-height:1.6}@media print{body{margin:0}}</style></head><body><h1>'+(n.title||'Untitled')+'</h1><div>'+ (typeof md==='function'?md(n.body||''):(n.body||'').replace(/</g,'&lt;')) +'</div><script>window.onload=()=>{window.print()}<\/script></body></html>';
+  w.document.write(html);w.document.close();closeExportSheet();
 }
 function importData(){
   const inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';
@@ -567,13 +599,22 @@ function closeMenu(){const m=$('#menu'),s=$('#scrim');if(m.hidden||m.classList.c
 let pk='note';
 function showPop(btn,k){
   pk=k;const m=$('#pmenu'),r=btn.getBoundingClientRect(),c=S.tabs.find(t=>t.id===S.filter);
-  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],['sep'],['export','Export data','share'],['import','Import data','file'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
+  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['exportnote','Export…','file'],['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],['sep'],['export','Export data','share'],['import','Import data','file'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
   m.innerHTML=A.map(([a,t,i])=>a==='sep'?'<div class="sep" role="separator"></div>':`<button role="menuitem" data-a="${a}"${a.startsWith('del')?' class="danger"':''}><span>${t}</span>${ic(i,20)}</button>`).join('');
   m.style.top=r.bottom+8+'px';m.style.right=Math.max(8,innerWidth-r.right)+'px';
   $('#pscrim').hidden=false;m.hidden=false;m.querySelector('button').focus();
 }
 function closePop(){const m=$('#pmenu');if(m.hidden||m.classList.contains('out'))return;$('#pscrim').hidden=true;m.classList.add('out');setTimeout(()=>{m.hidden=true;m.classList.remove('out')},RM.matches?0:180)}
-$('#scrim').addEventListener('click',closeMenu);
+$('#scrim').addEventListener('click',()=>{closeMenu();closeExportSheet()});
+$('#esheet').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const n=cur();if(!n)return;
+  const f=b.dataset.fmt;
+  if(f==='md')exportNoteMarkdown(n);
+  else if(f==='html')exportNoteHTML(n);
+  else if(f==='pdf')exportNotePDF(n);
+  else closeExportSheet();
+});
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeMenu();closePop()}});
 $('#menu').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const i=S.items.find(x=>x.id===menuId);closeMenu();if(!i)return;
@@ -647,6 +688,7 @@ $('#pmenu').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const n=cur(),a=b.dataset.a;closePop();
   if(pk==='home'){if(a==='newtab')tabDlg(false);else if(a==='rename')tabDlg(true);else if(a==='hour'){S.h12=S.h12==='12'?'24':'12';save();render()}else if(a==='export')exportData();else if(a==='import')importData();else $('#deltab').click();return}
   if(a==='share')navigator.share({title:n.title||'Note',text:n.body}).catch(()=>{});
+  else if(a==='exportnote')showExportSheet();
   else if(a==='dup'){const t=Date.now();S.items.push({...n,id:uid(),created:t,updated:t,title:n.title?n.title+' copy':''});save();goBack()}
   else ask('Delete this note?','This can’t be undone.','Delete note',()=>nav('pop',()=>{S.items=S.items.filter(x=>x!==n);save();S.open=null;render();scrollTo(0,S.y||0)}));
 });
