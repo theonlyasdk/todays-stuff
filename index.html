@@ -324,7 +324,7 @@ const KEY='todays-stuff:v1';
 let S={items:[],tabs:[],filter:'all',open:null,mode:'write',h12:'auto'},pending=null,delT,menuId=null;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const IC={file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/>',
+const IC={download:'<path d="M2.99969 17.0002C2.99969 17.9302 2.99969 18.3952 3.10192 18.7767C3.37932 19.8119 4.18796 20.6206 5.22324 20.898C5.60474 21.0002 6.06972 21.0002 6.99969 21.0002L16.9997 21.0002C17.9297 21.0002 18.3947 21.0002 18.7762 20.898C19.8114 20.6206 20.6201 19.8119 20.8975 18.7767C20.9997 18.3952 20.9997 17.9302 20.9997 17.0002" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M16.4998 11.5002C16.4998 11.5002 13.1856 16.0002 11.9997 16.0002C10.8139 16.0002 7.49976 11.5002 7.49976 11.5002M11.9997 15.0002V3.00016" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>',fileExport:'<path d="M20 14V10.6569C20 9.83935 20 9.4306 19.8478 9.06306C19.6955 8.69552 19.4065 8.40649 18.8284 7.82843L14.0919 3.09188C13.593 2.593 13.3436 2.34355 13.0345 2.19575C12.9702 2.165 12.9044 2.13772 12.8372 2.11401C12.5141 2 12.1614 2 11.4558 2C8.21082 2 6.58831 2 5.48933 2.88607C5.26731 3.06508 5.06508 3.26731 4.88607 3.48933C4 4.58831 4 6.21082 4 9.45584V14C4 17.7712 4 19.6569 5.17157 20.8284C6.34315 22 8.22876 22 12 22M13 2.5V3C13 5.82843 13 7.24264 13.8787 8.12132C14.7574 9 16.1716 9 19 9H19.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M17 22C17.6068 21.4102 20 19.8403 20 19C20 18.1597 17.6068 16.5898 17 16M19 19H12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>',fileImport:'<path d="M20 15.0057V10.6606C20 9.84276 20 9.43383 19.8478 9.06613C19.6955 8.69843 19.4065 8.40927 18.8284 7.83096L14.0919 3.09236C13.593 2.59325 13.3436 2.3437 13.0345 2.19583C12.9702 2.16508 12.9044 2.13778 12.8372 2.11406C12.5141 2 12.1614 2 11.4558 2C8.21082 2 6.58831 2 5.48933 2.88646C5.26731 3.06554 5.06508 3.26787 4.88607 3.48998C4 4.58943 4 6.21265 4 9.45908V14.0052C4 17.7781 4 19.6645 5.17157 20.8366C6.11466 21.7801 7.52043 21.9641 10 22M13 2.50022V3.00043C13 5.83009 13 7.24492 13.8787 8.12398C14.7574 9.00304 16.1716 9.00304 19 9.00304H19.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/><path d="M15 22C14.3932 21.4102 12 19.8403 12 19C12 18.1597 14.3932 16.5898 15 16M13 19H20" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>',file:'<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"/>',
  back:'<path d="m15 18-6-6 6-6"/>',todo:'<rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/>',
  more:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',plus:'<path d="M5 12h14M12 5v14"/>',
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
@@ -414,7 +414,7 @@ function showExportSheet(){
   const s=$('#esheet');s.innerHTML=
     '<button data-fmt="md">'+ic('file',20)+'Export as Markdown</button>'+
     '<button data-fmt="html">'+ic('code',20)+'Export as HTML</button>'+
-    '<button data-fmt="pdf">'+ic('file',20)+'Export as PDF</button>'+
+    '<button data-fmt="pdf">'+ic('download',20)+'Export as PDF</button>'+
     '<button data-fmt="cancel">Cancel</button>';
   s.hidden=false;requestAnimationFrame(()=>s.classList.add('open'));
   $('#scrim').hidden=false;
@@ -599,7 +599,7 @@ function closeMenu(){const m=$('#menu'),s=$('#scrim');if(m.hidden||m.classList.c
 let pk='note';
 function showPop(btn,k){
   pk=k;const m=$('#pmenu'),r=btn.getBoundingClientRect(),c=S.tabs.find(t=>t.id===S.filter);
-  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['exportnote','Export…','file'],['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],['sep'],['export','Export data','share'],['import','Import data','file'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
+  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['exportnote','Export…','fileExport'],['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],['sep'],['export','Export data','fileExport'],['import','Import data','fileImport'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
   m.innerHTML=A.map(([a,t,i])=>a==='sep'?'<div class="sep" role="separator"></div>':`<button role="menuitem" data-a="${a}"${a.startsWith('del')?' class="danger"':''}><span>${t}</span>${ic(i,20)}</button>`).join('');
   m.style.top=r.bottom+8+'px';m.style.right=Math.max(8,innerWidth-r.right)+'px';
   $('#pscrim').hidden=false;m.hidden=false;m.querySelector('button').focus();
