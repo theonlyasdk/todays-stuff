@@ -130,8 +130,9 @@ dialog .cap{margin:4px 0 16px}
 #menu button.danger svg{color:var(--danger)}
 #menu button:hover{background:var(--hover)}
 #menu button.danger{color:var(--danger)}
-#esheet{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;display:flex;flex-direction:column;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:var(--r) var(--r) 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.14);transform:translateY(100%);transition:transform .25s cubic-bezier(.32,.72,0,1)}
-#esheet.open{transform:translateY(0)}
+#esheet{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;display:flex;flex-direction:column;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:var(--r) var(--r) 0 0;box-shadow:0 -4px 16px rgba(0,0,0,.14)}
+#esheet:not([hidden]){animation:sheet-in .4s cubic-bezier(.32,.72,0,1)}
+#esheet.out{animation:sheet-out .26s cubic-bezier(.32,.72,0,1) forwards}
 #esheet[hidden]{display:none}
 #esheet::before{content:"";display:block;flex:none;width:36px;height:5px;margin:0 auto 4px;border-radius:3px;background:color-mix(in srgb,var(--text) 22%,transparent)}
 #esheet button{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:0 12px;text-align:left;font:inherit;font-size:15px;color:var(--text);background:none;border:0;border-radius:var(--r-sm);cursor:pointer}
@@ -419,10 +420,9 @@ function showExportSheet(){
     '<button data-fmt="html">'+ic('code',20)+'Export as HTML</button>'+
     '<button data-fmt="pdf">'+ic('file',20)+'Export as PDF</button>'+
     '<button data-fmt="cancel">Cancel</button>';
-  s.hidden=false;requestAnimationFrame(()=>s.classList.add('open'));
-  $('#scrim').hidden=false;
+  s.classList.remove('out');s.hidden=false;$('#scrim').hidden=false;
 }
-function closeExportSheet(){const s=$('#esheet');if(s.hidden||!s.classList.contains('open'))return;s.classList.remove('open');$('#scrim').hidden=true;setTimeout(()=>s.hidden=true,260)}
+function closeExportSheet(){const s=$('#esheet');if(s.hidden||s.classList.contains('out'))return;s.classList.add('out');$('#scrim').hidden=true;setTimeout(()=>{s.hidden=true;s.classList.remove('out')},RM.matches?0:260)}
 function exportNoteMarkdown(n){
   const blob=new Blob(['# '+(n.title||'Untitled')+'\n\n'+(n.body||'')+'\n'],{type:'text/markdown'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(n.title||'note')+'.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);closeExportSheet();
