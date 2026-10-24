@@ -337,6 +337,29 @@ const ic=(n,z=18,w=1.75)=>`<svg viewBox="0 0 24 24" width="${z}" height="${z}" f
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const warn=on=>{$('#warn').hidden=!on};
 const keep=i=>i.type==='todo'?i.text.trim():(i.title||i.body);
+function exportData(){
+  const blob=new Blob([JSON.stringify({items:S.items,tabs:S.tabs,filter:S.filter,h:S.h12},null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='todays-stuff-backup.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function importData(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';
+  inp.onchange=e=>{
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{
+      const a=JSON.parse(ev.target.result);
+      if(!a||!Array.isArray(a.items))throw new Error('invalid backup');
+      ask('Import data?','This replaces your current items, tabs, and settings.','Import',()=>{
+        S.items=a.items||[];S.tabs=a.tabs||[];S.filter=a.filter||'all';S.h12=a.h||a.h12||'auto';save();render();
+      });
+    }catch(err){alert('Import failed: '+err.message)};
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
 function load(){try{const r=localStorage.getItem(KEY),a=r&&JSON.parse(r);if(Array.isArray(a))S.items=a;else if(a){S.items=a.items||[];S.tabs=a.tabs||[];S.filter=a.filter||'all';S.h12=a.h||'auto'}}catch(e){warn(true)}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({items:S.items.filter(keep),tabs:S.tabs,filter:S.filter,h:S.h12}));warn(false)}catch(e){warn(true)}}
 function fmt(ts){const d=new Date(ts),o={hour:'numeric',minute:'2-digit'};if(S.h12!=='auto')o.hour12=S.h12==='12';return d.toDateString()===new Date().toDateString()?d.toLocaleTimeString([],o):d.toLocaleDateString([],{month:'short',day:'numeric'})}
@@ -484,7 +507,7 @@ function closeMenu(){const m=$('#menu'),s=$('#scrim');if(m.hidden||m.classList.c
 let pk='note';
 function showPop(btn,k){
   pk=k;const m=$('#pmenu'),r=btn.getBoundingClientRect(),c=S.tabs.find(t=>t.id===S.filter);
-  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
+  const A=k==='note'?[...(navigator.share?[['share','Share…','share']]:[]),['dup','Duplicate','copy'],['sep'],['del','Delete note','trash']]:[['newtab','New tab…','plus'],...(c?[['rename','Rename tab…','pencil']]:[]),['hour',S.h12==='12'?'Use 24-hour time':'Use 12-hour time','clock'],['sep'],['export','Export data','share'],['import','Import data','file'],...(c?[['sep'],['deltab','Delete tab','trash']]:[])];
   m.innerHTML=A.map(([a,t,i])=>a==='sep'?'<div class="sep" role="separator"></div>':`<button role="menuitem" data-a="${a}"${a.startsWith('del')?' class="danger"':''}><span>${t}</span>${ic(i,20)}</button>`).join('');
   m.style.top=r.bottom+8+'px';m.style.right=Math.max(8,innerWidth-r.right)+'px';
   $('#pscrim').hidden=false;m.hidden=false;m.querySelector('button').focus();
@@ -562,7 +585,7 @@ $('#hmore').addEventListener('click',e=>showPop(e.currentTarget,'home'));
 $('#pscrim').addEventListener('click',closePop);
 $('#pmenu').addEventListener('click',e=>{
   const b=e.target.closest('button');if(!b)return;const n=cur(),a=b.dataset.a;closePop();
-  if(pk==='home'){if(a==='newtab')tabDlg(false);else if(a==='rename')tabDlg(true);else if(a==='hour'){S.h12=S.h12==='12'?'24':'12';save();render()}else $('#deltab').click();return}
+  if(pk==='home'){if(a==='newtab')tabDlg(false);else if(a==='rename')tabDlg(true);else if(a==='hour'){S.h12=S.h12==='12'?'24':'12';save();render()}else if(a==='export')exportData();else if(a==='import')importData();else $('#deltab').click();return}
   if(a==='share')navigator.share({title:n.title||'Note',text:n.body}).catch(()=>{});
   else if(a==='dup'){const t=Date.now();S.items.push({...n,id:uid(),created:t,updated:t,title:n.title?n.title+' copy':''});save();goBack()}
   else ask('Delete this note?','This can’t be undone.','Delete note',()=>nav('pop',()=>{S.items=S.items.filter(x=>x!==n);save();S.open=null;render();scrollTo(0,S.y||0)}));
