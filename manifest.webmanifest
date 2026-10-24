@@ -1,5 +1,5 @@
 {
-  "id": "/",
+  "id": "./",
   "name": "Today's Stuff",
   "short_name": "Today's Stuff",
   "description": "A small daily items app for todos and notes.",
