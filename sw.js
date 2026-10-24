@@ -1,4 +1,4 @@
-const CACHE = 'todays-stuff-v1';
+const CACHE = 'todays-stuff-v2';
 const PRECACHE = [
   './',
   './index.html',
@@ -12,6 +12,8 @@ const PRECACHE = [
   './icons/icon-maskable-192.png',
   './icons/icon-maskable-512.png',
   './screenshots/mobile.png',
+  './screenshots/mobile-2.png',
+  './screenshots/mobile-3.png',
   './screenshots/desktop.png'
 ];
 

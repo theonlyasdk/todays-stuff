@@ -9,7 +9,10 @@
   "orientation": "portrait-primary",
   "background_color": "#F3F3EF",
   "theme_color": "#0F766E",
-  "categories": ["productivity", "utilities"],
+  "categories": [
+    "productivity",
+    "utilities"
+  ],
   "lang": "en",
   "icons": [
     {
@@ -40,17 +43,31 @@
   "screenshots": [
     {
       "src": "./screenshots/mobile.png",
-      "sizes": "390x844",
+      "sizes": "1082x2426",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Today's Stuff on mobile"
+      "label": "Home"
+    },
+    {
+      "src": "./screenshots/mobile-2.png",
+      "sizes": "1082x2426",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Screenshot 2"
+    },
+    {
+      "src": "./screenshots/mobile-3.png",
+      "sizes": "1082x2426",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Screenshot 3"
     },
     {
       "src": "./screenshots/desktop.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Today's Stuff on desktop"
+      "label": "Desktop"
     }
   ],
   "shortcuts": [
