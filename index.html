@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F3F3EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0F0F0E" media="(prefers-color-scheme: dark)">
+<meta name="application-name" content="Today's Stuff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Today's Stuff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icons/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
 <title>Today’s Stuff</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif&display=swap">
 <style>
@@ -612,6 +623,9 @@ addEventListener('pagehide',save);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
 const sct=new WeakMap();
 addEventListener('scroll',e=>{const t=e.target===document?document.documentElement:e.target;if(!t.setAttribute)return;t.setAttribute('data-sc','');clearTimeout(sct.get(t));sct.set(t,setTimeout(()=>t.removeAttribute('data-sc'),800))},{capture:true,passive:true});
+</script>
+<script>
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./sw.js').catch(()=>{});});}
 </script>
 </body>
 </html>
