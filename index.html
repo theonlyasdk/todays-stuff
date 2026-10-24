@@ -2942,8 +2942,8 @@
       });
 
       /* init */
-      $("#date").textContent = ((d) =>
-        `Today is ${d.toLocaleDateString("en-GB", { weekday: "long" })}, ${d.getDate()} ${d.toLocaleDateString("en-GB", { month: "long" })} ${d.getFullYear()}`)(
+      $("#date").innerHTML = ((d) =>
+        `Today is ${d.toLocaleDateString("en-GB", { weekday: "long" })},<br><span style="white-space:nowrap">${d.getDate()} ${d.toLocaleDateString("en-GB", { month: "long" })} ${d.getFullYear()}</span>`)(
         new Date(),
       );
       $("#back").innerHTML = ic("back", 24, 2) + "<span>All Items</span>";
