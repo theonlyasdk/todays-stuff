@@ -2589,6 +2589,9 @@
           t0 = e.timeStamp;
           on = false;
           pid = e.pointerId;
+          try {
+            el.setPointerCapture(pid);
+          } catch (err) {}
         });
         el.addEventListener("pointermove", (e) => {
           if (y0 === null || e.pointerId !== pid) return;
@@ -2596,7 +2599,6 @@
           if (!on) {
             if (dy > 6) {
               on = true;
-              el.setPointerCapture(pid);
               el.style.transition = "none";
             } else return;
           }
