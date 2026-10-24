@@ -665,6 +665,7 @@ function dragSheet(el,o={}){
 }
 document.querySelectorAll('dialog').forEach(d=>dragSheet(d,{close:()=>shut(d),ok:d.id==='pdlg'?e=>!e.target.closest('.pbody'):null}));
 dragSheet($('#menu'),{close:closeMenu,scrim:()=>$('#scrim'),ok:()=>matchMedia('(max-width:520px)').matches});
+dragSheet($('#esheet'),{close:closeExportSheet,scrim:()=>$('#scrim'),ok:()=>true});
 /* confirm */
 let cfn=null;
 function ask(t,m,ok,fn){$('#ct').textContent=t;$('#cm').textContent=m;$('#cok').textContent=ok;cfn=fn;$('#cdlg').showModal()}

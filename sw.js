@@ -1,4 +1,4 @@
-const CACHE = 'todays-stuff-v13';
+const CACHE = 'todays-stuff-v14';
 const PRECACHE = [
   './',
   './index.html',
